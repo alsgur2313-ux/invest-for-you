@@ -286,21 +286,51 @@ footer{background:#0a1530;padding:48px 5% 36px;}
         <button class="btn-primary" onclick="goTo('philosophy')">투자철학 보기</button>
         <button class="btn-secondary" onclick="goTo('blog')">인사이트 읽기</button>
       </div>
-    </div>
-    <div class="hero-card reveal">
-      <div class="hero-card-title">
-        <span>📊 오늘의 시장 현황</span>
-        <button class="refresh-btn" id="refreshBtn" onclick="fetchMarket()">↻ 새로고침</button>
-      </div>
-      <div class="market-grid" id="marketGrid">
-        <div class="mkt"><div class="mkt-label">KOSPI</div><div class="mkt-val" id="v-kospi">—</div><div class="mkt-chg" id="c-kospi">불러오는 중...</div></div>
-        <div class="mkt"><div class="mkt-label">KOSDAQ</div><div class="mkt-val" id="v-kosdaq">—</div><div class="mkt-chg" id="c-kosdaq">불러오는 중...</div></div>
-        <div class="mkt"><div class="mkt-label">S&P 500</div><div class="mkt-val" id="v-sp500">—</div><div class="mkt-chg" id="c-sp500">불러오는 중...</div></div>
-        <div class="mkt"><div class="mkt-label">USD/KRW</div><div class="mkt-val" id="v-usdkrw">—</div><div class="mkt-chg" id="c-usdkrw">불러오는 중...</div></div>
-      </div>
-      <div class="update-note" id="updateNote">데이터를 불러오는 중입니다...</div>
-    </div>
+ <!-- 기존 hero-card 전체를 아래 코드로 교체 -->
+<div class="hero-card">
+  <div class="hero-card-title">
+    <span>📊 오늘의 시장 현황</span>
+    <span style="font-size:11px; color:rgba(255,255,255,0.4);">실시간 · 참고용 정보</span>
   </div>
+
+  <!-- KOSPI -->
+  <div style="margin-bottom:10px;">
+    <div class="mkt-label" style="color:rgba(255,255,255,0.5);font-size:11px;margin-bottom:4px;">KOSPI</div>
+    <iframe src="https://sslecal2.investing.com/widgets/live-currency-cross-rates/index.html?DropdownInstrumentId=179&columns=chg_pct&theme=dark&lang=18"
+      width="100%" height="50" frameborder="0" scrolling="no"
+      style="border-radius:8px;overflow:hidden;display:block;"></iframe>
+  </div>
+
+  <!-- 위젯 그리드 -->
+  <div class="market-grid" style="gap:10px;">
+
+    <!-- TradingView 미니 위젯 KOSPI -->
+    <div class="mkt" style="padding:0;overflow:hidden;border-radius:10px;">
+      <iframe src="https://www.tradingview.com/widgetembed/?frameElementId=tw1&symbol=KRX%3AKOSPI&interval=D&hidesidetoolbar=1&symboledit=0&saveimage=0&toolbarbg=1a3580&theme=dark&style=2&timezone=Asia%2FSeoul&withdateranges=0&showpopupbutton=0&studies=[]&hidevolume=1&hidetoptoolbar=1&locale=kr"
+        width="100%" height="90" frameborder="0" scrolling="no"></iframe>
+    </div>
+
+    <!-- TradingView 미니 위젯 KOSDAQ -->
+    <div class="mkt" style="padding:0;overflow:hidden;border-radius:10px;">
+      <iframe src="https://www.tradingview.com/widgetembed/?frameElementId=tw2&symbol=KRX%3AKOSDAQ&interval=D&hidesidetoolbar=1&symboledit=0&saveimage=0&toolbarbg=1a3580&theme=dark&style=2&timezone=Asia%2FSeoul&withdateranges=0&showpopupbutton=0&studies=[]&hidevolume=1&hidetoptoolbar=1&locale=kr"
+        width="100%" height="90" frameborder="0" scrolling="no"></iframe>
+    </div>
+
+    <!-- TradingView 미니 위젯 S&P500 -->
+    <div class="mkt" style="padding:0;overflow:hidden;border-radius:10px;">
+      <iframe src="https://www.tradingview.com/widgetembed/?frameElementId=tw3&symbol=SP%3ASPX&interval=D&hidesidetoolbar=1&symboledit=0&saveimage=0&toolbarbg=1a3580&theme=dark&style=2&timezone=America%2FNew_York&withdateranges=0&showpopupbutton=0&studies=[]&hidevolume=1&hidetoptoolbar=1&locale=kr"
+        width="100%" height="90" frameborder="0" scrolling="no"></iframe>
+    </div>
+
+    <!-- TradingView 미니 위젯 USD/KRW -->
+    <div class="mkt" style="padding:0;overflow:hidden;border-radius:10px;">
+      <iframe src="https://www.tradingview.com/widgetembed/?frameElementId=tw4&symbol=FX_IDC%3AUSDKRW&interval=D&hidesidetoolbar=1&symboledit=0&saveimage=0&toolbarbg=1a3580&theme=dark&style=2&timezone=Asia%2FSeoul&withdateranges=0&showpopupbutton=0&studies=[]&hidevolume=1&hidetoptoolbar=1&locale=kr"
+        width="100%" height="90" frameborder="0" scrolling="no"></iframe>
+    </div>
+
+  </div>
+  <div class="update-note">TradingView 실시간 데이터 · 참고용 정보</div>
+</div>
 </section>
 
 <!-- STATS -->
