@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>관리자 — Invest For You</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Noto Sans KR',sans-serif;background:#f8faff;color:#1a2340;}
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.login-box{background:#fff;border:1px solid #e2e8f4;border-radius:16px;padding:48px;width:100%;max-width:400px;text-align:center;}
+.login-logo{font-size:20px;font-weight:700;margin-bottom:8px;}
+.login-logo span{color:#2563eb;}
+.login-box p{font-size:14px;color:#64748b;margin-bottom:28px;}
+.login-box input{width:100%;padding:12px 16px;border:1px solid #e2e8f4;border-radius:8px;font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;margin-bottom:12px;}
+.login-box input:focus{border-color:#2563eb;}
+.login-btn{width:100%;padding:12px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.login-btn:hover{background:#1d4ed8;}
+.login-err{font-size:13px;color:#ef4444;margin-top:10px;}
+
+.admin-wrap{display:none;min-height:100vh;}
+.admin-nav{background:#0f1f4b;padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.admin-nav .logo{font-size:16px;font-weight:700;color:#fff;}
+.admin-nav .logo span{color:#60a5fa;}
+.admin-nav-btns{display:flex;gap:10px;align-items:center;}
+.admin-nav-btns a{font-size:13px;color:rgba(255,255,255,0.6);cursor:pointer;text-decoration:none;}
+.logout-btn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:6px 14px;border-radius:6px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+
+.admin-body{max-width:1100px;margin:0 auto;padding:32px 20px;display:grid;grid-template-columns:1fr 380px;gap:24px;align-items:start;}
+.editor-box{background:#fff;border:1px solid #e2e8f4;border-radius:14px;padding:28px;}
+.editor-box h2{font-size:18px;font-weight:700;margin-bottom:24px;color:#1a2340;}
+.form-row{margin-bottom:18px;}
+.form-row label{display:block;font-size:13px;color:#64748b;margin-bottom:6px;font-weight:500;}
+.form-row input,.form-row select,.form-row textarea{width:100%;padding:10px 14px;border:1px solid #e2e8f4;border-radius:8px;font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;color:#1a2340;background:#fff;}
+.form-row input:focus,.form-row select:focus,.form-row textarea:focus{border-color:#2563eb;}
+.form-row textarea{min-height:320px;resize:vertical;line-height:1.7;}
+.form-hint{font-size:12px;color:#94a3b8;margin-top:5px;line-height:1.5;}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.submit-btn{width:100%;padding:13px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:500;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-top:8px;}
+.submit-btn:hover{background:#1d4ed8;}
+.submit-btn:disabled{background:#94a3b8;cursor:not-allowed;}
+.delete-btn{width:100%;padding:10px;background:#fff;color:#ef4444;border:1px solid #fca5a5;border-radius:8px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-top:8px;}
+.delete-btn:hover{background:#fef2f2;}
+
+.list-box{background:#fff;border:1px solid #e2e8f4;border-radius:14px;padding:24px;position:sticky;top:20px;}
+.list-box h2{font-size:16px;font-weight:700;margin-bottom:16px;color:#1a2340;display:flex;justify-content:space-between;align-items:center;}
+.list-count{font-size:13px;color:#94a3b8;font-weight:400;}
+.new-btn{background:#2563eb;color:#fff;border:none;padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.report-item{padding:12px;border:1px solid #f1f5f9;border-radius:10px;margin-bottom:8px;cursor:pointer;transition:all .2s;}
+.report-item:hover{border-color:#2563eb;background:#f8faff;}
+.report-item.active{border-color:#2563eb;background:#eff6ff;}
+.ri-title{font-size:13px;font-weight:500;color:#1a2340;margin-bottom:4px;word-break:keep-all;}
+.ri-meta{font-size:11px;color:#94a3b8;display:flex;gap:8px;}
+.ri-tag{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;}
+.tag-market{background:#eff6ff;color:#2563eb;}
+.tag-stock{background:#f0fdf4;color:#16a34a;}
+.tag-tax{background:#fefce8;color:#ca8a04;}
+.tag-global{background:#fdf4ff;color:#9333ea;}
+.tag-etc{background:#f1f5f9;color:#475569;}
+
+.toast{position:fixed;bottom:24px;right:24px;background:#1a2340;color:#fff;padding:12px 20px;border-radius:10px;font-size:14px;opacity:0;transform:translateY(10px);transition:all .3s;z-index:999;}
+.toast.show{opacity:1;transform:none;}
+.toast.success{background:#059669;}
+.toast.error{background:#dc2626;}
+
+.preview-box{background:#f8faff;border:1px solid #e2e8f4;border-radius:10px;padding:16px;margin-top:12px;}
+.preview-box h4{font-size:12px;color:#94a3b8;margin-bottom:10px;letter-spacing:0.5px;}
+.preview-content{font-size:13px;color:#334155;line-height:1.7;}
+.preview-content h2{font-size:15px;font-weight:700;margin:12px 0 6px;}
+.preview-content p{margin-bottom:8px;}
+.preview-content ul{margin:0 0 8px 16px;}
+.preview-content table{width:100%;border-collapse:collapse;margin:8px 0;font-size:12px;}
+.preview-content th{background:#e2e8f4;padding:6px;text-align:left;}
+.preview-content td{padding:6px;border:1px solid #e2e8f4;}
+</style>
+</head>
+<body>
+
+<!-- 로그인 -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <div class="login-logo">Invest <span>For You</span></div>
+    <p>관리자 페이지입니다</p>
+    <input type="email" id="loginEmail" placeholder="이메일" onkeydown="if(event.key==='Enter')login()">
+    <input type="password" id="loginPw" placeholder="비밀번호" onkeydown="if(event.key==='Enter')login()">
+    <button class="login-btn" onclick="login()">로그인</button>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- 관리자 화면 -->
+<div class="admin-wrap" id="adminWrap">
+  <div class="admin-nav">
+    <div class="logo">Invest <span>For You</span> <span style="font-size:12px;color:rgba(255,255,255,0.4);font-weight:300;">관리자</span></div>
+    <div class="admin-nav-btns">
+      <a href="report.html" target="_blank">리포트 페이지 보기 →</a>
+      <button class="logout-btn" onclick="logout()">로그아웃</button>
+    </div>
+  </div>
+
+  <div class="admin-body">
+    <!-- 에디터 -->
+    <div class="editor-box">
+      <h2 id="editorTitle">✏️ 새 리포트 작성</h2>
+      <input type="hidden" id="editDocId">
+
+      <div class="form-row">
+        <label>제목 *</label>
+        <input type="text" id="fTitle" placeholder="리포트 제목을 입력하세요">
+      </div>
+
+      <div class="form-row">
+        <label>한 줄 요약 *</label>
+        <input type="text" id="fSummary" placeholder="카드에 표시될 간단한 요약문">
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-row" style="margin-bottom:0">
+          <label>카테고리 *</label>
+          <select id="fCategory">
+            <option>시장분석</option>
+            <option>종목분석</option>
+            <option>절세전략</option>
+            <option>글로벌</option>
+            <option>기타</option>
+          </select>
+        </div>
+        <div class="form-row" style="margin-bottom:0">
+          <label>이모지</label>
+          <input type="text" id="fEmoji" placeholder="📊" value="📊">
+        </div>
+      </div>
+
+      <div class="form-row" style="margin-top:18px;">
+        <label>읽기 시간</label>
+        <input type="text" id="fRead" placeholder="예: 8분" value="8분">
+      </div>
+
+      <div class="form-row">
+        <label>본문 (HTML 태그 사용 가능) *</label>
+        <textarea id="fContent" placeholder="본문을 입력하세요.
+
+HTML 태그 사용 예시:
+&lt;h2&gt;소제목&lt;/h2&gt;
+&lt;p&gt;문단 내용&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;목록&lt;/li&gt;&lt;/ul&gt;
+
+강조박스:
+&lt;div class=&quot;article-highlight&quot;&gt;&lt;p&gt;💡 핵심 포인트&lt;/p&gt;&lt;/div&gt;
+
+결론박스:
+&lt;div class=&quot;article-conclusion&quot;&gt;&lt;p&gt;결론 내용&lt;/p&gt;&lt;/div&gt;" oninput="updatePreview()"></textarea>
+        <div class="form-hint">💡 HTML 태그를 사용해 서식을 지정할 수 있어요. h2(소제목), p(문단), ul/li(목록), table(표)</div>
+      </div>
+
+      <div class="form-row">
+        <label>미리보기</label>
+        <div class="preview-box">
+          <h4>PREVIEW</h4>
+          <div class="preview-content" id="previewContent">본문을 입력하면 여기에 미리보기가 표시됩니다.</div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>최신 리포트로 설정 (Featured)</label>
+        <select id="fFeatured">
+          <option value="true">✨ 예 — 메인에 크게 표시</option>
+          <option value="false">아니오</option>
+        </select>
+      </div>
+
+      <button class="submit-btn" id="submitBtn" onclick="saveReport()">🚀 리포트 발행하기</button>
+      <button class="delete-btn" id="deleteBtn" onclick="deleteReport()" style="display:none">🗑 이 리포트 삭제</button>
+    </div>
+
+    <!-- 리포트 목록 -->
+    <div class="list-box">
+      <h2>
+        리포트 목록
+        <div style="display:flex;gap:6px;align-items:center;">
+          <span class="list-count" id="listCount">0개</span>
+          <button class="new-btn" onclick="newReport()">+ 새 글</button>
+        </div>
+      </h2>
+      <div id="reportList"><div style="text-align:center;padding:20px;color:#94a3b8;font-size:14px;">로딩 중...</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAT3jg8UmywwkTP-YYmDr1fqlCXqgmCQHs",
+  authDomain: "invest-for-you.firebaseapp.com",
+  projectId: "invest-for-you",
+  storageBucket: "invest-for-you.firebasestorage.app",
+  messagingSenderId: "66231759400",
+  appId: "1:66231759400:web:646d98ed15c839d26f7b1d"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// 로그인 상태 감지
+onAuthStateChanged(auth, user => {
+  if (user) {
+    document.getElementById('loginWrap').style.display = 'none';
+    document.getElementById('adminWrap').style.display = 'block';
+    loadReports();
+  } else {
+    document.getElementById('loginWrap').style.display = 'flex';
+    document.getElementById('adminWrap').style.display = 'none';
+  }
+});
+
+window.login = async () => {
+  const email = document.getElementById('loginEmail').value;
+  const pw = document.getElementById('loginPw').value;
+  try {
+    await signInWithEmailAndPassword(auth, email, pw);
+  } catch(e) {
+    document.getElementById('loginErr').textContent = '이메일 또는 비밀번호가 올바르지 않습니다.';
+  }
+};
+
+window.logout = () => signOut(auth);
+
+const tagClass = { '시장분석':'tag-market','종목분석':'tag-stock','절세전략':'tag-tax','글로벌':'tag-global','기타':'tag-etc' };
+
+async function loadReports() {
+  const q = query(collection(db, 'reports'), orderBy('createdAt', 'desc'));
+  const snap = await getDocs(q);
+  const list = document.getElementById('reportList');
+  document.getElementById('listCount').textContent = snap.size + '개';
+  if (snap.empty) { list.innerHTML = '<div style="text-align:center;padding:20px;color:#94a3b8;font-size:14px;">작성된 리포트가 없습니다.</div>'; return; }
+  list.innerHTML = snap.docs.map(d => {
+    const r = d.data();
+    return `<div class="report-item" onclick="editReport('${d.id}','${encodeURIComponent(JSON.stringify(r))}')" id="item-${d.id}">
+      <div class="ri-title">${r.title}</div>
+      <div class="ri-meta">
+        <span class="ri-tag ${tagClass[r.category]||'tag-etc'}">${r.category}</span>
+        <span>${r.date}</span>
+        <span>${r.read} 읽기</span>
+        ${r.featured ? '<span style="color:#2563eb;font-weight:500;">★ Featured</span>' : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.newReport = () => {
+  document.getElementById('editorTitle').textContent = '✏️ 새 리포트 작성';
+  document.getElementById('editDocId').value = '';
+  document.getElementById('fTitle').value = '';
+  document.getElementById('fSummary').value = '';
+  document.getElementById('fContent').value = '';
+  document.getElementById('fCategory').value = '시장분석';
+  document.getElementById('fEmoji').value = '📊';
+  document.getElementById('fRead').value = '8분';
+  document.getElementById('fFeatured').value = 'false';
+  document.getElementById('submitBtn').textContent = '🚀 리포트 발행하기';
+  document.getElementById('deleteBtn').style.display = 'none';
+  document.getElementById('previewContent').innerHTML = '본문을 입력하면 여기에 미리보기가 표시됩니다.';
+  document.querySelectorAll('.report-item').forEach(el => el.classList.remove('active'));
+};
+
+window.editReport = (id, encoded) => {
+  const r = JSON.parse(decodeURIComponent(encoded));
+  document.getElementById('editorTitle').textContent = '📝 리포트 수정';
+  document.getElementById('editDocId').value = id;
+  document.getElementById('fTitle').value = r.title || '';
+  document.getElementById('fSummary').value = r.summary || '';
+  document.getElementById('fContent').value = r.content || '';
+  document.getElementById('fCategory').value = r.category || '시장분석';
+  document.getElementById('fEmoji').value = r.emoji || '📊';
+  document.getElementById('fRead').value = r.read || '8분';
+  document.getElementById('fFeatured').value = r.featured ? 'true' : 'false';
+  document.getElementById('submitBtn').textContent = '💾 수정 저장하기';
+  document.getElementById('deleteBtn').style.display = 'block';
+  document.getElementById('previewContent').innerHTML = r.content || '';
+  document.querySelectorAll('.report-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('item-'+id)?.classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+};
+
+window.saveReport = async () => {
+  const title = document.getElementById('fTitle').value.trim();
+  const summary = document.getElementById('fSummary').value.trim();
+  const content = document.getElementById('fContent').value.trim();
+  if (!title || !summary || !content) { showToast('제목, 요약, 본문은 필수입니다.', 'error'); return; }
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = '저장 중...';
+  const now = new Date();
+  const date = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
+  const data = {
+    title, summary, content,
+    category: document.getElementById('fCategory').value,
+    emoji: document.getElementById('fEmoji').value || '📊',
+    read: document.getElementById('fRead').value || '8분',
+    featured: document.getElementById('fFeatured').value === 'true',
+    date, createdAt: serverTimestamp()
+  };
+  try {
+    const docId = document.getElementById('editDocId').value;
+    if (docId) { await updateDoc(doc(db, 'reports', docId), data); showToast('수정되었습니다! ✅', 'success'); }
+    else { await addDoc(collection(db, 'reports'), data); showToast('발행되었습니다! 🎉', 'success'); newReport(); }
+    loadReports();
+  } catch(e) { showToast('저장 실패: ' + e.message, 'error'); }
+  btn.disabled = false;
+  btn.textContent = document.getElementById('editDocId').value ? '💾 수정 저장하기' : '🚀 리포트 발행하기';
+};
+
+window.deleteReport = async () => {
+  const docId = document.getElementById('editDocId').value;
+  if (!docId) return;
+  if (!confirm('정말 삭제하시겠습니까?')) return;
+  try {
+    await deleteDoc(doc(db, 'reports', docId));
+    showToast('삭제되었습니다.', 'success');
+    newReport(); loadReports();
+  } catch(e) { showToast('삭제 실패: ' + e.message, 'error'); }
+};
+
+window.updatePreview = () => {
+  document.getElementById('previewContent').innerHTML = document.getElementById('fContent').value;
+};
+
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 2500);
+}
+</script>
+</body>
+</html>
