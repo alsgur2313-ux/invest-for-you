@@ -398,8 +398,8 @@ window.subscribe = () => {
   const em = document.getElementById('subEmail').value.trim();
   const msg = document.getElementById('subMsg');
   if (!em||!em.includes('@')) { msg.textContent='올바른 이메일을 입력해주세요.'; msg.style.color='#f87171'; return; }
-  msg.textContent='✓ 구독해주셔서 감사합니다!'; msg.style.color='#34d399';
-  document.getElementById('subEmail').value='';
+  window.open('https://docs.google.com/forms/d/e/1FAIpQLSfQZJpm-goTwmVUy3S3MMeAC0WsUIE_NJerDeKSZULPJdY-rA/viewform?usp=publish-editor', '_blank');
+  msg.textContent='✓ 구글 폼으로 이동합니다. 이메일을 입력해 구독을 완료해주세요!'; msg.style.color='#34d399';
 };
 
 loadReports();
